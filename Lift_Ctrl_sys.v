@@ -31,19 +31,16 @@ case(current_state)
     if (reset == 1 || door_obst == 1 || flr_sel == 2'b01) begin
         next_state <= flr1_door_open;
         flr_rchd <= 01;
-        door <= 1;
         end
     else begin
         next_state <= flr1_door_close;
         flr_rchd <= 01;
-        door <= 0;
         end
  
     flr1_door_close:
     if (flr_sel == 2'b01 || up_sel == 2'b01) begin
         next_state <= flr1_door_open;
         flr_rchd <= 01;
-        door <= 1;
         end
     else if (flr_sel == 2'b10 || flr_sel == 2'b11 || up_sel == 2'b10 || down_sel == 2'b10 || down_sel == 2'b11) begin
         next_state <= flr2_door_close;
@@ -53,79 +50,75 @@ case(current_state)
     else begin
         next_state <= flr1_door_close;
         flr_rchd <= 01;
-        door <= 0;
         end     
  
     flr2_door_close:
     if (flr_sel == 2'b10 || up_sel == 2'b10 || down_sel == 2'b10)begin
         next_state <= flr2_door_open;
         flr_rchd <= 10;
-        door <= 1;
         end
     else if (flr_sel == 2'b11 || down_sel == 2'b11)begin
         next_state <= flr3_door_close;
         flr_rchd <= 11;
-        door <= 0;
         end
     else if (flr_sel == 2'b01 || up_sel == 2'b01)begin
         next_state <= flr1_door_close;
         flr_rchd <= 01;
-        door <= 0;
         end
     else begin
         next_state <= flr2_door_close;
         flr_rchd <= 10;
-        door <= 0;
         end 
  
     flr2_door_open:
     if (door_obst == 1 || flr_sel == 2'b10) begin
         next_state <= flr2_door_open;
         flr_rchd <= 10;
-        door <= 1;
         end
     else begin
         next_state <= flr2_door_close;
         flr_rchd <= 10;
-        door <= 0;
         end
  
     flr3_door_close:
     if (flr_sel == 2'b11 || down_sel == 2'b11) begin
         next_state <= flr3_door_open;
         flr_rchd <= 11;
-        door <= 1;
         end
     else if (flr_sel == 2'b10 || flr_sel == 2'b01 || up_sel == 2'b10 || down_sel == 2'b10 || up_sel == 2'b01) begin
         next_state <= flr2_door_close;
         flr_rchd <= 10;
-        door <= 0;
         end
      else begin
         next_state <= flr3_door_close;
         flr_rchd <= 11;
-        door <= 0;
         end 
  
     flr3_door_open:
     if (door_obst == 1 || flr_sel == 2'b11) begin
         next_state <= flr3_door_open;
         flr_rchd <=11;
-        door <= 1;
         end
     else begin
         next_state <= flr3_door_close;
         flr_rchd <= 11;
-        door <= 0;
         end
  
     default:
         begin
         next_state <= flr1_door_open; 
         flr_rchd <= 01;
-        door <=1;
         end
 endcase
 end
 
+always @(current_state)
+begin
+case (current_state)
+    flr1_door_open, flr2_door_open, flr3_door_open:
+        door <= 1;
+    flr1_door_close, flr2_door_close, flr3_door_close:
+        door <= 0;
+endcase
+end
 endmodule
